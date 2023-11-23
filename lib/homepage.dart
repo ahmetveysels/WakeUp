@@ -146,7 +146,7 @@ class _HomePageState extends State<HomePage> {
         : minutes == "1"
             ? "$minutes Minute "
             : "$minutes Minutes ";
-    String formatSecond = minutes == "1" ? "$seconds Second" : "$seconds Seconds";
+    String formatSecond = seconds == "1" ? "$seconds Second" : "$seconds Seconds";
     return "$formatHour$formatMinute$formatSecond".trim();
   }
 }
