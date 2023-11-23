@@ -90,7 +90,7 @@ class _HomePageState extends State<HomePage> {
         children: [
           Text(text, style: const TextStyle(fontSize: 28)),
           const SizedBox(height: 10),
-          AutoSizeText("${durationToString(changeSc.value)} opened", style: const TextStyle(fontSize: 30), maxLines: 1),
+          AutoSizeText(durationToString(changeSc.value), style: const TextStyle(fontSize: 30), maxLines: 1),
         ],
       ),
     );
@@ -136,9 +136,17 @@ class _HomePageState extends State<HomePage> {
     String minutes = duration.inMinutes.remainder(60).toString();
     String seconds = duration.inSeconds.remainder(60).toString();
 
-    String formatHour = hours == "0" ? "" : "$hours Hours ";
-    String formatMinute = minutes == "0" ? "" : "$minutes Minutes ";
-    String formatSecond = "$seconds Seconds";
-    return "$formatHour$formatMinute$formatSecond";
+    String formatHour = hours == "0"
+        ? ""
+        : hours == "1"
+            ? "$hours Hour "
+            : "$hours Hours ";
+    String formatMinute = minutes == "0"
+        ? ""
+        : minutes == "1"
+            ? "$minutes Minute "
+            : "$minutes Minutes ";
+    String formatSecond = minutes == "1" ? "$seconds Second" : "$seconds Seconds";
+    return "$formatHour$formatMinute$formatSecond".trim();
   }
 }
