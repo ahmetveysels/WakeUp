@@ -15,7 +15,15 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'WakeUp',
-      theme: ThemeData.dark(),
+      theme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: const Color(0xFF272D34),
+        textTheme: Theme.of(context)
+            .textTheme
+            .copyWith(
+              bodyMedium: const TextStyle(fontFamily: "ClockFont"),
+            )
+            .apply(),
+      ),
       home: const HomePage(),
     );
   }

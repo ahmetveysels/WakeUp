@@ -1,10 +1,11 @@
 import 'dart:async';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/state_manager.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wakelock/wakelock.dart';
-import 'package:analog_clock/analog_clock.dart';
+import 'package:wakeup/clock/analog_clock.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -14,15 +15,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  
-  final RxInt changeSc = 0.obs;
+  final Rx<Duration> changeSc = const Duration(seconds: 0).obs;
 
   @override
   void initState() {
     super.initState();
     Wakelock.toggle(enable: true);
     Timer.periodic(const Duration(seconds: 1), (timer) {
-      changeSc.value++;
+      changeSc.value = changeSc.value + const Duration(seconds: 1);
     });
   }
 
@@ -50,21 +50,28 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             const Expanded(
-              child: AnalogClock(hourHandColor: Colors.white, minuteHandColor: Colors.white, tickColor: Colors.white, numberColor: Colors.white, digitalClockColor: Colors.white),
+              child: AnalogClock(
+                hourHandColor: Colors.white,
+                minuteHandColor: Colors.white,
+                tickColor: Colors.white,
+                numberColor: Colors.white,
+                digitalClockColor: Colors.white,
+                showTicks: true,
+              ),
             ),
             Column(
               children: [
                 _buildScreenOpenedDate(),
                 const SizedBox(height: 5),
-                const Text("Screen always on", textAlign: TextAlign.center, style: TextStyle(fontSize: 20)),
-                const SizedBox(height: 20),
-                Text("Copyright © ${DateTime.now().year} Ahmet Veysel ", textAlign: TextAlign.center, style: const TextStyle(fontSize: 14)),
-                const SizedBox(height: 5),
+                const AutoSizeText("Screen always on", textAlign: TextAlign.center, style: TextStyle(fontSize: 30)),
+                const SizedBox(height: 10),
+                AutoSizeText("Copyright © ${DateTime.now().year} Ahmet Veysel ", textAlign: TextAlign.center, style: const TextStyle(fontSize: 22)),
+                const SizedBox(height: 10),
                 InkWell(
                   onTap: () {
-                    launchUrl(Uri.parse("https://www.ahmetveysel.com"));
+                    launchUrl(Uri.parse("ahmetveysel.com/?plt=wakeup"));
                   },
-                  child: const Text("www.ahmetveysel.com"),
+                  child: const AutoSizeText("www.ahmetveysel.com", style: TextStyle(fontSize: 22, color: Colors.redAccent)),
                 ),
                 const SizedBox(height: 20),
               ],
@@ -79,9 +86,12 @@ class _HomePageState extends State<HomePage> {
     DateTime date = DateTime.now();
     String text = "${date.day.toString().padLeft(2, "0")}.${date.month.toString().padLeft(2, "0")}.${date.year} ${date.hour.toString().padLeft(2, "0")}:${date.minute.toString().padLeft(2, "0")}:${date.second.toString().padLeft(2, "0")}";
     return Obx(
-      () => Text(
-        "$text (${changeSc.value} sn)",
-        style: const TextStyle(fontSize: 20),
+      () => Column(
+        children: [
+          Text(text, style: const TextStyle(fontSize: 28)),
+          const SizedBox(height: 10),
+          AutoSizeText("${durationToString(changeSc.value)} opened", style: const TextStyle(fontSize: 30), maxLines: 1),
+        ],
       ),
     );
   }
@@ -103,15 +113,15 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   _buildScreenOpenedDate(),
                   const SizedBox(height: 10),
-                  const Text("Screen always on", textAlign: TextAlign.center, style: TextStyle(fontSize: 20)),
-                  const SizedBox(height: 20),
-                  Text("Copyright © ${DateTime.now().year} Ahmet Veysel ", textAlign: TextAlign.center, style: const TextStyle(fontSize: 14)),
+                  const AutoSizeText("Screen always on", textAlign: TextAlign.center, style: TextStyle(fontSize: 30)),
+                  const SizedBox(height: 10),
+                  AutoSizeText("Copyright © ${DateTime.now().year} Ahmet Veysel ", textAlign: TextAlign.center, style: const TextStyle(fontSize: 22)),
                   const SizedBox(height: 10),
                   InkWell(
                       onTap: () {
-                        launchUrl(Uri.parse("https://www.ahmetveysel.com"));
+                        launchUrl(Uri.parse("ahmetveysel.com/?plt=wakeup"));
                       },
-                      child: const Text("www.ahmetveysel.com")),
+                      child: const AutoSizeText("www.ahmetveysel.com", style: TextStyle(fontSize: 22, color: Colors.redAccent))),
                 ],
               ),
             ),
@@ -119,5 +129,16 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+  String durationToString(Duration duration) {
+    String hours = duration.inHours.toString();
+    String minutes = duration.inMinutes.remainder(60).toString();
+    String seconds = duration.inSeconds.remainder(60).toString();
+
+    String formatHour = hours == "0" ? "" : "$hours Hours ";
+    String formatMinute = minutes == "0" ? "" : "$minutes Minutes ";
+    String formatSecond = "$seconds Seconds";
+    return "$formatHour$formatMinute$formatSecond";
   }
 }
