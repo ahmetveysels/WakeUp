@@ -61,7 +61,7 @@ class AnalogClockPainter extends CustomPainter {
   }
 
   void _drawIndicators(Canvas canvas, Size size, double scaleFactor, bool showAllNumbers) {
-    TextStyle style = TextStyle(color: numberColor, fontWeight: FontWeight.bold, fontFamily: "ClockFont", fontSize: 18.0 * scaleFactor * textScaleFactor);
+    TextStyle style = TextStyle(color: numberColor, fontWeight: FontWeight.bold, fontFamily: "ClockFont", fontSize: 28.0 * scaleFactor * textScaleFactor);
     double p = 12.0;
     if (showTicks) p += 24.0;
 
