@@ -84,14 +84,19 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildScreenOpenedDate() {
-    DateTime date = DateTime.now();
-    String text = "${date.day.toString().padLeft(2, "0")}.${date.month.toString().padLeft(2, "0")}.${date.year} ${date.hour.toString().padLeft(2, "0")}:${date.minute.toString().padLeft(2, "0")}:${date.second.toString().padLeft(2, "0")}";
+    Rx<DateTime> date = DateTime.now().obs;
+    // String text = "${date.value.day.toString().padLeft(2, "0")}.${date.value.month.toString().padLeft(2, "0")}.${date.value.year} ${date.value.hour.toString().padLeft(2, "0")}:${date.value.minute.toString().padLeft(2, "0")}:${date.value.second.toString().padLeft(2, "0")}";
     return Obx(
       () => Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(text, style: const TextStyle(fontSize: 28)),
+          Obx(
+            () => Text(
+              "${date.value.day.toString().padLeft(2, "0")}.${date.value.month.toString().padLeft(2, "0")}.${date.value.year} ${date.value.hour.toString().padLeft(2, "0")}:${date.value.minute.toString().padLeft(2, "0")}:${date.value.second.toString().padLeft(2, "0")}",
+              style: const TextStyle(fontSize: 28),
+            ),
+          ),
           const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -101,6 +106,7 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(width: 10),
               InkWell(
                 onTap: () {
+                  date.value = DateTime.now();
                   changeSc.value = const Duration(seconds: 0);
                 },
                 child: SvgPicture.asset(
