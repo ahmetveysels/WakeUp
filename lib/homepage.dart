@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/state_manager.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wakelock/wakelock.dart';
@@ -87,10 +88,30 @@ class _HomePageState extends State<HomePage> {
     String text = "${date.day.toString().padLeft(2, "0")}.${date.month.toString().padLeft(2, "0")}.${date.year} ${date.hour.toString().padLeft(2, "0")}:${date.minute.toString().padLeft(2, "0")}:${date.second.toString().padLeft(2, "0")}";
     return Obx(
       () => Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(text, style: const TextStyle(fontSize: 28)),
           const SizedBox(height: 10),
-          AutoSizeText(durationToString(changeSc.value), style: const TextStyle(fontSize: 30), maxLines: 1),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              AutoSizeText(durationToString(changeSc.value), style: const TextStyle(fontSize: 30), maxLines: 1),
+              const SizedBox(width: 10),
+              InkWell(
+                onTap: () {
+                  changeSc.value = const Duration(seconds: 0);
+                },
+                child: SvgPicture.asset(
+                  "assets/refresh.svg",
+                  height: 22,
+                  fit: BoxFit.cover,
+                  colorFilter: const ColorFilter.mode(Colors.blueAccent, BlendMode.srcIn),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
